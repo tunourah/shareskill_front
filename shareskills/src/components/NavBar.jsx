@@ -1,109 +1,149 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Menu, X, User, LogOut } from 'lucide-react';
+// src/components/NavBar.jsx
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { Menu, X, User, LogOut } from "lucide-react";
 import * as usersAPI from "../utilities/users-api";
 
 const NavBar = ({ user, setUser }) => {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
-  
- // will refresh state and set us back to home without a user
- function handleLogout() {
-    usersAPI.logout()
-    setUser(null);
-    navigate("/")
-}
 
+  function handleLogout() {
+    usersAPI.logout();
+    setUser(null);
+    navigate("/");
+  }
 
   return (
     <nav className="w-full border-b px-4 py-3">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         {/* Logo */}
-        <div className="flex items-center space-x-2">
-          <Link to="/" className="flex items-center space-x-2">
-            <span className="text-xl font-semibold">ShareSkills</span>
-            {/* <span className="text-xs bg-blue-600 text-white px-2 py-0.5 rounded-full">Beta</span> */}
-          </Link>
-        </div>
+        <Link to="/" className="text-xl font-semibold">
+          ShareSkills
+        </Link>
 
-        {/* Menu Icon for Mobile */}
-        <div className="md:hidden">
-          <button onClick={() => setOpen(!open)}>
-            {open ? <X size={24} /> : <Menu size={24} />}
-          </button>
-        </div>
+        {/* Mobile hamburger */}
+        <button
+          className="md:hidden"
+          onClick={() => setOpen(o => !o)}
+          aria-label="Toggle menu"
+        >
+          {open ? <X size={24} /> : <Menu size={24} />}
+        </button>
 
-        {/* Desktop Nav */}
+        {/* Desktop nav links */}
         <ul className="hidden md:flex space-x-6 text-sm font-medium text-gray-800">
-          <Link to="/"><li className="hover:text-black cursor-pointer">Browse Services</li></Link>
-          <li className="hover:text-black cursor-pointer">How It Works</li>
-          <li className="hover:text-black cursor-pointer">Become a Provider</li>
+          <li>
+            <Link to="/" className="hover:text-black">
+              Browse Services
+            </Link>
+          </li>
+          <li>
+            <Link to="/how-it-works" className="hover:text-black">
+              How It Works
+            </Link>
+          </li>
+          <li>
+            <Link to="/become-provider" className="hover:text-black">
+              Become a Provider
+            </Link>
+          </li>
         </ul>
 
-        {/* Desktop Buttons - Conditional based on auth state */}
+        {/* Desktop auth buttons */}
         <div className="hidden md:flex space-x-3">
           {!user ? (
             <>
-              <Link to="/"> 
-                <button className="px-4 py-1 rounded bg-gray-100 hover:bg-gray-200 text-sm">Log in</button>
+              <Link to="/login">
+                <button className="px-4 py-1 rounded bg-gray-100 hover:bg-gray-200 text-sm">
+                  Log in
+                </button>
               </Link>
               <Link to="/signup">
-                <button className="px-4 py-1 rounded bg-black text-white text-sm hover:bg-gray-800">Get Started</button>
+                <button className="px-4 py-1 rounded bg-black text-white text-sm hover:bg-gray-800">
+                  Get Started
+                </button>
               </Link>
             </>
           ) : (
-            <div className="relative">
-              <div className="flex items-center space-x-3">
-                <Link to="/">
-                  <button className="px-4 py-1 rounded bg-gray-100 hover:bg-gray-200 text-sm flex items-center gap-2">
-                    <User size={16} /> 
-                    {user.first_name || user.username}
-                  </button>
-                </Link>
-                <button 
-                  className="relative px-4 py-1 rounded bg-red-50 text-red-600 hover:bg-red-100 text-sm flex items-center gap-2"
-                  onClick={handleLogout}
-                  type="button"
-                >
-                  <LogOut size={16} /> Logout
+            <div className="flex items-center space-x-3">
+              <Link to="/profile">
+                <button className="px-4 py-1 rounded bg-gray-100 hover:bg-gray-200 text-sm flex items-center gap-2">
+                  <User size={16} /> {user.first_name || user.username}
                 </button>
-              </div>
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="px-4 py-1 rounded bg-red-50 text-red-600 hover:bg-red-100 text-sm flex items-center gap-2"
+              >
+                <LogOut size={16} /> Logout
+              </button>
             </div>
           )}
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile menu */}
       {open && (
         <div className="md:hidden mt-4 space-y-3 text-sm text-gray-800">
           <ul className="space-y-2">
-            <Link to="/services" onClick={() => setOpen(false)}>
-              <li className="hover:text-black">Browse Services</li>
-            </Link>
-            <li className="hover:text-black">How It Works</li>
-            <li className="hover:text-black">Become a Provider</li>
+            <li>
+              <Link
+                to="/"
+                onClick={() => setOpen(false)}
+                className="block hover:text-black"
+              >
+                Browse Services
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/how-it-works"
+                onClick={() => setOpen(false)}
+                className="block hover:text-black"
+              >
+                How It Works
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/become-provider"
+                onClick={() => setOpen(false)}
+                className="block hover:text-black"
+              >
+                Become a Provider
+              </Link>
+            </li>
           </ul>
+
+          {/* Mobile auth buttons */}
           <div className="flex flex-col gap-2 mt-3">
             {!user ? (
               <>
-                <Link to="/user/login" onClick={() => setOpen(false)}>
-                  <button className="py-2 w-full rounded bg-gray-100 hover:bg-gray-200">Log in</button>
+                <Link to="/login" onClick={() => setOpen(false)}>
+                  <button className="py-2 w-full rounded bg-gray-100 hover:bg-gray-200">
+                    Log in
+                  </button>
                 </Link>
-                <Link to="/user/signup" onClick={() => setOpen(false)}>
-                  <button className="py-2 w-full rounded bg-black text-white hover:bg-gray-800">Get Started</button>
+                <Link to="/signup" onClick={() => setOpen(false)}>
+                  <button className="py-2 w-full rounded bg-black text-white hover:bg-gray-800">
+                    Get Started
+                  </button>
                 </Link>
               </>
             ) : (
               <>
-                <Link to="/" onClick={() => setOpen(false)}>
+                <Link to="/profile" onClick={() => setOpen(false)}>
                   <button className="py-2 w-full rounded bg-gray-100 hover:bg-gray-200 flex items-center justify-center gap-2">
-                    <User size={16} /> 
-                    {user.first_name || user.username}
+                    <User size={16} /> {user.first_name || user.username}
                   </button>
                 </Link>
-                <button 
+                <button
+                  onClick={() => {
+                    handleLogout();
+                    setOpen(false);
+                  }}
                   className="py-2 w-full rounded bg-red-50 text-red-600 hover:bg-red-100 flex items-center justify-center gap-2"
-                  onClick={handleLogout}
                   type="button"
                 >
                   <LogOut size={16} /> Logout
