@@ -39,10 +39,14 @@ const NavBar = ({ user, setUser }) => {
             </Link>
           </li>
           <li>
-            <Link to="/how-it-works" className="hover:text-black">
-              How It Works
-            </Link>
-          </li>
+              <a 
+                href="#Works"
+                onClick={() => setOpen(false)}
+                className="block hover:text-black"
+              >
+                How It Works
+              </a>
+            </li>
           <li>
             <Link to="/become-provider" className="hover:text-black">
               Become a Provider
@@ -97,13 +101,13 @@ const NavBar = ({ user, setUser }) => {
               </Link>
             </li>
             <li>
-              <Link
-                to="/how-it-works"
+              <a 
+                href="#Works"
                 onClick={() => setOpen(false)}
                 className="block hover:text-black"
               >
                 How It Works
-              </Link>
+              </a>
             </li>
             <li>
               <Link
