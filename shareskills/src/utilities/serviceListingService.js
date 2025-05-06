@@ -1,4 +1,4 @@
-// src/services/serviceListingService.js
+// src/utilities/serviceListingService.js
 import sendRequest from '../utilities/sendRequest';
  
 const BASE = '/service-listings';

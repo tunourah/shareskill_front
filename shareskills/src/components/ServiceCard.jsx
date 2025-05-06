@@ -1,7 +1,7 @@
 import { Calendar, User, DollarSign, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
  
-export default function ServiceCard({ service }) {
+export default function ServiceCard({ service  }) {
   // Define color constants
   const COLORS = {
     darkTeal: "#002933", // base, text, backgrounds
