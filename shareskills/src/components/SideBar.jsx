@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Plus, List, MessageSquare, Briefcase, FileText } from 'lucide-react';
 import { getAllServiceListings } from '../utilities/serviceListingService';
 import { useState, useEffect } from 'react';
-
+import { getServiceRequests } from '../utilities/serviceRequestService';
 // Define color constants - same as card component for consistency
 const COLORS = {
   darkTeal: "#002933", // 40% usage - base, text, backgrounds
@@ -114,21 +114,56 @@ const SideBar = ({ services = [], pendingRequests = [], activeRequests = [] }) =
   const location = useLocation();
   const currentPath = location.pathname;
   const [myCount, setMyCount] = useState(0);
+  const [pendingCount, setPendingCount] = useState(0);
+  const [activeCount,  setActiveCount]  = useState(0);
+  const [historyCount, setHistoryCount] = useState(0);
+  const [requestCount, setRequestCount] = useState(0);
+
   useEffect(() => {
-    // fetch only the current user’s listings, then take the array length
+    // My listings count
     getAllServiceListings({ provider: 'current' })
       .then(data => {
         const arr = Array.isArray(data) ? data : (data.results || []);
         setMyCount(arr.length);
       })
-      .catch(err => {
-        console.error('Could not fetch my listings count', err);
-      });
+      .catch(() => {});
+
+    // My requests count (client view)
+    getServiceRequests({ client: 'current' })
+      .then(data => {
+        const arr = Array.isArray(data) ? data : (data.results || []);
+        setRequestCount(arr.length);
+      })
+      .catch(() => {});
+
+    // Pending (provider)
+    getServiceRequests({ provider: 'current', status: 'pending' })
+      .then(data => {
+        const arr = Array.isArray(data) ? data : (data.results || []);
+        setPendingCount(arr.length);
+      })
+      .catch(() => {});
+
+    // Active jobs (provider)
+    getServiceRequests({ provider: 'current', status: 'accepted' })
+      .then(data => {
+        const arr = Array.isArray(data) ? data : (data.results || []);
+        setActiveCount(arr.length);
+      })
+      .catch(() => {});
+
+    // History (provider)
+    getServiceRequests({ provider: 'current' })
+      .then(data => {
+        const arr = Array.isArray(data) ? data : (data.results || []);
+        setHistoryCount(arr.filter(r => !['pending','accepted'].includes(r.status)).length);
+      })
+      .catch(() => {});
   }, []);
+
+  const isActive = (path) => currentPath === path;
   // Helper function to check if a path is active
-  const isActive = (path) => {
-    return currentPath === path;
-  };
+ 
 
   return (
     <div>
@@ -167,15 +202,26 @@ const SideBar = ({ services = [], pendingRequests = [], activeRequests = [] }) =
                   </span>
                 </Link>
               </li>
-              {/* <li>
+              <li>
+              <Link
+                to="/requests"
+                className={`w-full flex items-center gap-3 p-3 rounded-xl text-sm transition-all ${isActive('/requests') ? 'pl-2' : ''}`}
+                style={isActive('/requests') ? styles.sideNav.itemActive : { color: COLORS.darkTeal }}
+              >
+                <MessageSquare size={18} stroke={isActive('/requests') ? COLORS.brightBlue : COLORS.darkTeal} />
+                <span>My Requests</span>
+                <span className="ml-auto bg-gray-200 text-gray-700 text-xs px-2 py-0.5 rounded-full">{requestCount}</span>
+              </Link>
+            </li>
+              <li>
                 <Link 
-                  to="/services/pending"
-                  className={`w-full flex items-center gap-3 p-3 rounded-xl text-sm transition-all ${isActive('/services/pending') ? 'pl-2' : ''}`}
-                  style={isActive('/services/pending') ? 
+                  to="/requests/pending"
+                  className={`w-full flex items-center gap-3 p-3 rounded-xl text-sm transition-all ${isActive('/requests/pending') ? 'pl-2' : ''}`}
+                  style={isActive('/requests/pending') ? 
                     { ...styles.sideNav.itemActive } : 
                     { color: COLORS.darkTeal }}
                 >
-                  <MessageSquare size={18} stroke={isActive('/services/pending') ? COLORS.brightBlue : COLORS.darkTeal} />
+                  <MessageSquare size={18} stroke={isActive('/requests/pending') ? COLORS.brightBlue : COLORS.darkTeal} />
                   <span>Pending Requests</span>
                   <span className="ml-auto bg-yellow-100 text-yellow-800 text-xs px-2 py-0.5 rounded-full">
                     {pendingRequests.length}
@@ -184,13 +230,13 @@ const SideBar = ({ services = [], pendingRequests = [], activeRequests = [] }) =
               </li>
               <li>
                 <Link 
-                  to="/services/active"
-                  className={`w-full flex items-center gap-3 p-3 rounded-xl text-sm transition-all ${isActive('/services/active') ? 'pl-2' : ''}`}
-                  style={isActive('/services/active') ? 
+                  to="/requests/active"
+                  className={`w-full flex items-center gap-3 p-3 rounded-xl text-sm transition-all ${isActive('//requests/active') ? 'pl-2' : ''}`}
+                  style={isActive('/requests/active') ? 
                     { ...styles.sideNav.itemActive } : 
                     { color: COLORS.darkTeal }}
                 >
-                  <Briefcase size={18} stroke={isActive('/services/active') ? COLORS.brightBlue : COLORS.darkTeal} />
+                  <Briefcase size={18} stroke={isActive('/requests/active') ? COLORS.brightBlue : COLORS.darkTeal} />
                   <span>Active Jobs</span>
                   <span className="ml-auto bg-green-100 text-green-800 text-xs px-2 py-0.5 rounded-full">
                     {activeRequests.length}
@@ -199,16 +245,16 @@ const SideBar = ({ services = [], pendingRequests = [], activeRequests = [] }) =
               </li>
               <li>
                 <Link 
-                  to="/services/history"
-                  className={`w-full flex items-center gap-3 p-3 rounded-xl text-sm transition-all ${isActive('/services/history') ? 'pl-2' : ''}`}
-                  style={isActive('/services/history') ? 
+                  to="/requests/history"
+                  className={`w-full flex items-center gap-3 p-3 rounded-xl text-sm transition-all ${isActive('/requests/history') ? 'pl-2' : ''}`}
+                  style={isActive('/requests/history') ? 
                     { ...styles.sideNav.itemActive } : 
                     { color: COLORS.darkTeal }}
                 >
-                  <FileText size={18} stroke={isActive('/services/history') ? COLORS.brightBlue : COLORS.darkTeal} />
+                  <FileText size={18} stroke={isActive('/requests/history') ? COLORS.brightBlue : COLORS.darkTeal} />
                   <span>Service History</span>
                 </Link>
-              </li> */}
+              </li>
             </ul>
           </nav>
         </div>

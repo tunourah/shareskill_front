@@ -10,6 +10,7 @@ import {
   MapPin
 } from 'lucide-react';
 import sendRequest from '../utilities/sendRequest';
+import { createServiceRequest } from '../utilities/serviceRequestService';
 
 // Define color constants  
 const COLORS = {
@@ -40,10 +41,12 @@ const styles = {
   }
 };
 
-export default function ServiceDetail() {
+export default function ServiceDetail({user}) {
   const { id } = useParams();
   const navigate = useNavigate();
-
+  const [showRequestForm, setShowRequestForm] = useState(false);
+  const [req, setReq] = useState({ message: '', proposed_datetime: '' });
+  
   const [service, setService] = useState(null);
   const [reviews, setReviews] = useState([]);
   const [activeTab, setActiveTab] = useState('details');
@@ -61,8 +64,11 @@ export default function ServiceDetail() {
           'GET'
         );
         setService(svc);
-        setReviews(Array.isArray(revResp) ? revResp : revResp.results ?? []);
-      } catch (err) {
+        const arr     = Array.isArray(revResp) ? revResp : revResp.results || [];
+        console.log('💬 REVIEWS:', arr);
+        setReviews(arr);
+
+    } catch (err) {
         setError(err.message || 'Failed to load details');
       } finally {
         setLoading(false);
@@ -71,7 +77,16 @@ export default function ServiceDetail() {
 
     fetchDetail();
   }, [id]);
-
+  const handleRequestSubmit = async e => {
+    e.preventDefault();
+    await createServiceRequest({
+      service_listing: id,
+      message: req.message,
+      proposed_datetime: req.proposed_datetime || null
+    });
+    setShowRequestForm(false);
+    // optionally toast or navigate to “My Requests”
+  };
   if (loading) {
     return (
       <div className="min-h-screen flex justify-center items-center" style={styles.page}>
@@ -107,7 +122,7 @@ export default function ServiceDetail() {
         <button
           className="flex items-center text-sm font-medium"
           style={{ color: COLORS.darkTeal }}
-          onClick={() => navigate(-1)}
+          onClick={() => nav(-1)}
         >
           <ChevronLeft size={16} stroke={COLORS.brightBlue} />
           <span>Back to Services</span>
@@ -151,18 +166,16 @@ export default function ServiceDetail() {
                 <div className="flex items-center ml-4">
                   <Star size={16} fill={COLORS.gold} stroke="none" />
                   <span className="ml-1 font-medium">{service.avg_rating}</span>
-                  <span className="ml-1 text-gray-500">
-                    ({service.review_count} reviews)
-                  </span>
+                  <span className="ml-1 text-gray-500">({service.review_count} reviews)</span>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Tabs */}
-          <div className="border-b mb-6" style={{ borderColor: 'rgba(39, 150, 154, 0.2)' }}>
+          <div className="border-b mb-6" style={{ borderColor: 'rgba(39,150,154,0.2)' }}>
             <div className="flex space-x-8">
-              {['details', 'reviews'].map((tab) => (
+              {['details', 'reviews'].map(tab => (
                 <button
                   key={tab}
                   className={`pb-2 font-medium text-sm ${activeTab === tab ? 'border-b-2' : ''}`}
@@ -180,74 +193,119 @@ export default function ServiceDetail() {
           </div>
 
           {/* Tab panels */}
-          <div>
-            {activeTab === 'details' && (
-              <div className="space-y-8">
-                <div>
-                  <h2 className="text-lg font-medium mb-2" style={{ color: COLORS.darkTeal }}>
-                    Description
-                  </h2>
-                  <p className="text-gray-700 leading-relaxed">{service.description}</p>
-                </div>
-
-                <div>
-                  <h2 className="text-lg font-medium mb-2" style={{ color: COLORS.darkTeal }}>
-                    Service Information
-                  </h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {[
-                      { icon: DollarSign, label: 'Price', value: service.price_description },
-                      { icon: MapPin, label: 'Location', value: service.location_description },
-                      { icon: Calendar, label: 'Listed Since', value: new Date(service.created_at).toLocaleDateString() }
-                    ].map(({ icon: Icon, label, value }) => (
-                      <div key={label} className="flex items-start space-x-3">
-                        <div className="p-2 rounded-full" style={styles.iconBg.primary}>
-                          <Icon size={18} stroke={COLORS.brightBlue} />
-                        </div>
-                        <div>
-                          <p className="text-sm font-medium" style={{ color: COLORS.darkTeal }}>{label}</p>
-                          <p className="text-gray-700">{value}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {activeTab === 'reviews' && (
+          {activeTab === 'details' && (
+            <div className="space-y-8">
+              {/* Description & Info */}
               <div>
-                {reviews.length > 0 ? (
-                  <div className="space-y-4">
-                    {reviews.map((rev) => (
-                      <div key={rev.id} className="p-4 rounded-2xl shadow-sm" style={styles.reviewCard}>
-                        <div className="flex justify-between items-start mb-2">
-                          <div>
-                            <span className="font-medium" style={{ color: COLORS.darkTeal }}>
-                              {rev.user?.username || rev.reviewer?.username}
-                            </span>
-                            <span className="ml-4 text-xs text-gray-500">
-                              {new Date(rev.created_at).toLocaleDateString()}
-                            </span>
-                          </div>
-                          <div className="flex">
-                            {[...Array(5)].map((_, i) => (
-                              <Star key={i} size={14} fill={i < rev.rating ? COLORS.gold : 'transparent'} stroke={COLORS.gold} />
-                            ))}
-                          </div>
-                        </div>
-                        <p className="text-gray-700">{rev.comment}</p>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-6 text-gray-500">
-                    <p>No reviews yet.</p>
-                  </div>
-                )}
+                <h2 className="text-lg font-medium mb-2" style={{ color: COLORS.darkTeal }}>
+                  Description
+                </h2>
+                <p className="text-gray-700 leading-relaxed">{service.description}</p>
               </div>
-            )}
+              <div>
+                <h2 className="text-lg font-medium mb-2" style={{ color: COLORS.darkTeal }}>
+                  Service Information
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {[
+                    { icon: DollarSign, label: 'Price', value: service.price_description },
+                    { icon: MapPin,    label: 'Location', value: service.location_description },
+                    { icon: Calendar,  label: 'Listed Since', value: new Date(service.created_at).toLocaleDateString() }
+                  ].map(({ icon: Icon, label, value }) => (
+                    <div key={label} className="flex items-start space-x-3">
+                      <div className="p-2 rounded-full" style={styles.iconBg.primary}>
+                        <Icon size={18} stroke={COLORS.brightBlue} />
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium" style={{ color: COLORS.darkTeal }}>{label}</p>
+                        <p className="text-gray-700">{value}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Request button & form */}
+              {service.provider?.id !== user?.id && (
+                <div className="mt-6 text-center">
+                  <button
+                    className="px-6 py-2 bg-mint text-darkTeal rounded-full"
+                    onClick={() => setShowRequestForm(true)}
+                  >
+                    Request This Service
+                  </button>
+                </div>
+              )}
+              {showRequestForm && (
+                <form
+                  className="mt-6 space-y-4 p-4 bg-white rounded-xl shadow"
+                  onSubmit={handleRequestSubmit}
+                >
+                  <textarea
+                    name="message"
+                    placeholder="Your message…"
+                    required
+                    className="w-full p-3 border rounded"
+                    value={req.message}
+                    onChange={e => setReq({ ...req, message: e.target.value })}
+                  />
+                  <input
+                    type="datetime-local"
+                    name="proposed_datetime"
+                    className="w-full p-3 border rounded"
+                    value={req.proposed_datetime}
+                    onChange={e => setReq({ ...req, proposed_datetime: e.target.value })}
+                  />
+                  <div className="flex justify-end gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setShowRequestForm(false)}
+                      className="px-4 py-2 bg-gray-200 rounded"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      className="px-4 py-2 bg-brightBlue text-white rounded"
+                    >
+                      Send Request
+                    </button>
+                  </div>
+                </form>
+              )}
+            </div>
+          )}
+
+{activeTab === 'reviews' && (
+  <div className="space-y-4">
+    {reviews.length > 0 ? (
+      reviews.map((rev) => (
+        <div key={rev.id} className="p-4 rounded-2xl shadow-sm">
+          {/* Reviewer & rating */}
+          <div className="flex justify-between items-start mb-2">
+            <strong className="text-gray-800">{rev.reviewer}</strong>
+            <div className="flex">
+              {[...Array(5)].map((_, i) => (
+                <Star
+                  key={i}
+                  size={14}
+                  fill={i < rev.rating ? COLORS.gold : 'transparent'}
+                  stroke={COLORS.gold}
+                />
+              ))}
+            </div>
           </div>
+
+          {/* **This** is the review message */}
+          <p className="text-gray-700">{rev.comment}</p>
+        </div>
+      ))
+    ) : (
+      <p className="text-center text-gray-500">No reviews yet.</p>
+    )}
+  </div>
+)}
+
         </div>
       </div>
     </div>

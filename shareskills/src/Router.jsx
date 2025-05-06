@@ -12,6 +12,11 @@ import MyListingsPage from "./pages/MyListingsPage";
 import Services from "./pages/Services";
 import ServiceDetail from './pages/ServiceDetail.jsx';
 import EditServicePage from './pages/EditServicePage';
+import PendingRequestsPage from "./pages/PendingRequestsPage";
+import MyRequestsPage      from "./pages/MyRequestsPage";
+import ReviewPage          from "./pages/ReviewPage";
+import ActiveRequestsPage  from "./pages/ActiveRequestsPage";
+import ServiceHistoryPage  from "./pages/ServiceHistoryPage";
 export default function Router({ user, setUser, loggingIn }) {
   const router = createBrowserRouter([
     {
@@ -36,13 +41,13 @@ export default function Router({ user, setUser, loggingIn }) {
           <Services  setUser={setUser}/>
         </>,
       },
-      {
-        path: "/services/:id",
-        element: <>
-          <NavBar user={user} setUser={setUser} />
-          <ServiceDetail  setUser={setUser}/>
-        </>,
-      },
+    //   {
+    //     path: "/services/:id",
+    //     element: <>
+    //       <NavBar user={user} setUser={setUser} />
+    //       <ServiceDetail user={user} setUser={setUser}/>
+    //     </>,
+    //   },
     {
       path: "/login",
       element: <>
@@ -80,6 +85,54 @@ export default function Router({ user, setUser, loggingIn }) {
           <EditServicePage />
         </>,
       },
+       // ———————— REQUESTS FLOW ————————
+
+ 
+       {
+        path: "/requests/pending",
+        element: <>
+          <NavBar user={user} setUser={setUser} />
+          <PendingRequestsPage />
+        </>,
+      },
+      {
+        path: "/requests/active",
+        element: <>
+          <NavBar user={user} setUser={setUser} />
+          <ActiveRequestsPage />
+        </>,
+      },
+      {
+        path: "/requests/history",
+        element: <>
+          <NavBar user={user} setUser={setUser} />
+          <ServiceHistoryPage />
+        </>,
+      },
+      {
+        path: "/requests",
+        element: <>
+          <NavBar user={user} setUser={setUser} />
+          <MyRequestsPage />
+        </>,
+      },
+      {
+        path: "/requests/:id/review",
+        element: <>
+          <NavBar user={user} setUser={setUser} />
+          <ReviewPage />
+        </>,
+      },
+    
+      // finally, your catch-all service-detail route:
+      {
+        path: "/services/:id",
+        element: <>
+          <NavBar user={user} setUser={setUser} />
+          <ServiceDetail user={user} />
+        </>,
+      },
+  
   ]);
 
   return <RouterProvider router={router} />;
