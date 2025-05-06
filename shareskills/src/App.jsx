@@ -7,10 +7,21 @@ import { getUser } from "./utilities/users-api";
 
 
 function App() {
-  const [user, setUser] = useState(getUser());
+  const [user, setUser] = useState(null);
+  const loggingIn = false
+
+  const resolveUser = async () =>{
+    const userObj = await getUser()
+    setUser(userObj)
+  }
+
+  useEffect(() => {
+    resolveUser()
+  }, [])
+  
 
   return (
-     <Router user={user} setUser={setUser} />
+     <Router user={user} setUser={setUser} loggingIn={loggingIn} />
   );
 }
 

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { FiSearch, FiPlusCircle } from 'react-icons/fi';
 
 const UserPage = ({ user }) => {
-  return (
+  return user? (
     <div className="min-h-screen bg-gray-50">
       {/* Welcome Section */}
       <div className="pt-16 pb-10 px-4">
@@ -74,7 +74,7 @@ const UserPage = ({ user }) => {
         </div>
       </div>
     </div>
-  );
+  ): <div>Please sign in</div>
 };
 
 export default UserPage;

@@ -12,7 +12,7 @@ import MyListingsPage from "./pages/MyListingsPage";
 import Services from "./pages/Services";
 import ServiceDetail from './pages/ServiceDetail.jsx';
 
-export default function Router({ user, setUser }) {
+export default function Router({ user, setUser, loggingIn }) {
   const router = createBrowserRouter([
     {
       path: "/",
@@ -46,7 +46,7 @@ export default function Router({ user, setUser }) {
     {
       path: "/login",
       element: <>
-        <NavBar user={user} setUser={setUser} />
+        <NavBar user={user} setUser={setUser} loggingIn={true} />
         <LoginPage setUser={setUser} />
       </>,
     },
@@ -60,24 +60,21 @@ export default function Router({ user, setUser }) {
     
     {
         path: "/my-listings",
-        element: user
-          ? <>
+        element: <>
               <NavBar user={user} setUser={setUser} />
               <MyListingsPage user={user} setUser={setUser} />
             </>
-          : <Navigate to="/login" replace />
       },
     // ←—— protected route
     {
       path: "/userpage",
-      element: user
-        ? <>
+      element: <>
             <NavBar    user={user} setUser={setUser} />
             <UserPage  user={user} setUser={setUser} />
           </>
-        : <Navigate to="/login" replace />
     },
   ]);
 
   return <RouterProvider router={router} />;
 }
+

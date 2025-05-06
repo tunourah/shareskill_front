@@ -12,6 +12,7 @@ const NavBar = ({ user, setUser }) => {
     usersAPI.logout();
     setUser(null);
     navigate("/");
+    window.location.reload()
   }
 
   return (

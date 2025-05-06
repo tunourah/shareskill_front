@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import * as usersAPI from "../utilities/users-api";
 
-export default function LoginPage({ user, setUser }) {
+export default function LoginPage({ user, setUser, loggingIn }) {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ username: "", password: "" });
   const [error, setError] = useState("");
@@ -17,6 +17,7 @@ export default function LoginPage({ user, setUser }) {
     try {
       const loggedInUser = await usersAPI.login(formData);
       setUser(loggedInUser);
+      loggingIn = true
       navigate("/userpage");
     } catch (err) {
       console.error("Login failed", err);
