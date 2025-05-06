@@ -6,3 +6,4 @@ const BASE = '/categories';
 export async function getAllCategories() {
   return sendRequest(`${BASE}/`, 'GET');
 }
+ 

@@ -34,7 +34,7 @@ const NavBar = ({ user, setUser }) => {
         {/* Desktop nav links */}
         <ul className="hidden md:flex space-x-6 text-sm font-medium text-gray-800">
           <li>
-            <Link to="/" className="hover:text-black">
+            <Link to="/services" className="hover:text-black">
               Browse Services
             </Link>
           </li>

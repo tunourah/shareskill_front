@@ -6,9 +6,11 @@ import Home           from "./pages/Home";
 import SignupPage     from "./pages/SignupPage";
 import LoginPage      from "./pages/LoginPage";
 import NavBar         from "./components/NavBar";
-import ServicePage from "./pages/ServicePage";
+import ServicePage from "./pages/NewServicePage";
 import UserPage       from "./pages/UserPage";
 import MyListingsPage from "./pages/MyListingsPage";
+import Services from "./pages/Services";
+import ServiceDetail from './pages/ServiceDetail.jsx';
 
 export default function Router({ user, setUser }) {
   const router = createBrowserRouter([
@@ -16,7 +18,7 @@ export default function Router({ user, setUser }) {
       path: "/",
       element: <>
         <NavBar user={user} setUser={setUser} />
-        <Home    user={user} setUser={setUser} />
+        <Home    />
       </>,
       errorElement: <ErrorPage />,
     },
@@ -27,6 +29,20 @@ export default function Router({ user, setUser }) {
         <SignupPage setUser={setUser} />
       </>,
     },
+    {
+        path: "/services",
+        element: <>
+          <NavBar user={user} setUser={setUser} />
+          <Services  setUser={setUser}/>
+        </>,
+      },
+      {
+        path: "/services/:id",
+        element: <>
+          <NavBar user={user} setUser={setUser} />
+          <ServiceDetail  setUser={setUser}/>
+        </>,
+      },
     {
       path: "/login",
       element: <>

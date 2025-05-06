@@ -1,9 +1,9 @@
 import sendRequest from "./sendRequest";
-const url = "/users"
+const url = "/users/"
 
 export async function signup(formData) {
     try {
-        const response = await sendRequest(`${url}/signup/`, "POST", formData)
+        const response = await sendRequest(`${url}signup/`, "POST", formData)
         localStorage.setItem('token', response.access);
         return response.user
     } catch(err) {
@@ -12,12 +12,10 @@ export async function signup(formData) {
     }
 }
 
-// updated login function!
 export async function login(formData) {
     try {
-        const response = await sendRequest(`${url}/login/`, "POST", formData)
+        const response = await sendRequest(`${url}login/`, "POST", formData)
         localStorage.setItem('token', response.access);
-        console.log(response, "login check response")
         return response.user
     } catch (err) {
         localStorage.removeItem('token');
@@ -25,7 +23,7 @@ export async function login(formData) {
     }
 }
 
-export async function logout() {
+export  function logout() {
     localStorage.removeItem('token');
 }
 
