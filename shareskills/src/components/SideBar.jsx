@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Plus, List, MessageSquare, Briefcase, FileText } from 'lucide-react';
+import { getAllServiceListings } from '../utilities/serviceListingService';
+import { useState, useEffect } from 'react';
 
 // Define color constants - same as card component for consistency
 const COLORS = {
@@ -111,7 +113,18 @@ const SideBar = ({ services = [], pendingRequests = [], activeRequests = [] }) =
   // Use location to determine which route is active
   const location = useLocation();
   const currentPath = location.pathname;
-
+  const [myCount, setMyCount] = useState(0);
+  useEffect(() => {
+    // fetch only the current user’s listings, then take the array length
+    getAllServiceListings({ provider: 'current' })
+      .then(data => {
+        const arr = Array.isArray(data) ? data : (data.results || []);
+        setMyCount(arr.length);
+      })
+      .catch(err => {
+        console.error('Could not fetch my listings count', err);
+      });
+  }, []);
   // Helper function to check if a path is active
   const isActive = (path) => {
     return currentPath === path;
@@ -150,7 +163,7 @@ const SideBar = ({ services = [], pendingRequests = [], activeRequests = [] }) =
                   <List size={18} stroke={isActive('/my-listings') ? COLORS.brightBlue : COLORS.darkTeal} />
                   <span>My Service Listings</span>
                   <span className="ml-auto bg-gray-200 text-gray-700 text-xs px-2 py-0.5 rounded-full">
-                    {services.length}
+                  {myCount}
                   </span>
                 </Link>
               </li>
