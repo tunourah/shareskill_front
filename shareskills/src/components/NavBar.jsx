@@ -71,7 +71,7 @@ const NavBar = ({ user, setUser }) => {
             </>
           ) : (
             <div className="flex items-center space-x-3">
-              <Link to="/profile">
+              <Link to="/userpage">
                 <button className="px-4 py-1 rounded bg-gray-100 hover:bg-gray-200 text-sm flex items-center gap-2">
                   <User size={16} /> {user.first_name || user.username}
                 </button>

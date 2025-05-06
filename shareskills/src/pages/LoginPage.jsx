@@ -17,7 +17,7 @@ export default function LoginPage({ user, setUser }) {
     try {
       const loggedInUser = await usersAPI.login(formData);
       setUser(loggedInUser);
-      navigate("/");
+      navigate("/userpage");
     } catch (err) {
       console.error("Login failed", err);
       setError(err.message || "Login failed");

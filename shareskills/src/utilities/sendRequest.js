@@ -19,4 +19,5 @@ export default async function sendRequest(url, method = 'GET', payload) {
 		console.log(err, "error in send-request");
 		return err;
 	}
+    
 }
