@@ -71,7 +71,15 @@ export default function MyListingsPage() {
     };
     fetchMyListings();
   }, []);
+  useEffect(() => {
+    getAllServiceListings({ provider: 'current' })
+      .then(data => setServices(Array.isArray(data) ? data : data.results || []))
+      .catch(console.error);
+  }, []);
 
+  const handleDeleted = (id) => {
+    setServices(svcs => svcs.filter(s => s.id !== id));
+  };
   return (
     <div className="min-h-screen py-8 px-4 md:px-8" style={styles.page}>
     {/* Back button */}
@@ -116,8 +124,12 @@ export default function MyListingsPage() {
           ) : services.length > 0 ? (
             <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
               {services.map(service => (
-                <ServiceCard key={service.id} service={service} />
-              ))}
+                <ServiceCard
+            key={service.id}
+            service={service}
+            showActions={true}
+            onDeleted={handleDeleted}
+          />              ))}
             </div>
           ) : (
             <div className="p-6 text-center">

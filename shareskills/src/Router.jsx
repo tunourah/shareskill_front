@@ -11,7 +11,7 @@ import UserPage       from "./pages/UserPage";
 import MyListingsPage from "./pages/MyListingsPage";
 import Services from "./pages/Services";
 import ServiceDetail from './pages/ServiceDetail.jsx';
-
+import EditServicePage from './pages/EditServicePage';
 export default function Router({ user, setUser, loggingIn }) {
   const router = createBrowserRouter([
     {
@@ -73,6 +73,13 @@ export default function Router({ user, setUser, loggingIn }) {
             <UserPage  user={user} setUser={setUser} />
           </>
     },
+    {
+        path: "/services/:id/edit",
+        element: <>
+          <NavBar user={user} setUser={setUser} />
+          <EditServicePage />
+        </>,
+      },
   ]);
 
   return <RouterProvider router={router} />;
