@@ -153,6 +153,7 @@ export default function ServiceDetail({user}) {
         {/* Content */}
         <div className="p-6 md:p-8">
           {/* Header */}
+          
           <div className="flex flex-col md:flex-row justify-between items-start gap-4 mb-8">
             <div>
               <h1 className="text-3xl font-bold mb-2" style={{ color: COLORS.darkTeal }}>
@@ -169,7 +170,20 @@ export default function ServiceDetail({user}) {
                   <span className="ml-1 text-gray-500">({service.review_count} reviews)</span>
                 </div>
               </div>
+            
             </div>
+                   {/* Request button & form -  */}
+                   {service.provider?.id !== user?.id && (
+                <div className="mt-8 text-center">
+                  <button
+                    className="px-8 py-3 bg-mint font-medium border-2 border-cyan-700 rounded-full hover:bg-teal-100 transition-colors duration-300 shadow-sm"
+                    style={{ color: COLORS.darkTeal }}
+                    onClick={() => setShowRequestForm(true)}
+                  >
+                    Request This Service
+                  </button>
+                </div>
+              )}
           </div>
 
           {/* Tabs */}
@@ -225,18 +239,7 @@ export default function ServiceDetail({user}) {
                 </div>
               </div>
 
-              {/* Request button & form - STYLED VERSION */}
-              {service.provider?.id !== user?.id && (
-                <div className="mt-8 text-center">
-                  <button
-                    className="px-8 py-3 bg-mint font-medium rounded-full hover:bg-teal-100 transition-colors duration-300 shadow-sm"
-                    style={{ color: COLORS.darkTeal }}
-                    onClick={() => setShowRequestForm(true)}
-                  >
-                    Request This Service
-                  </button>
-                </div>
-              )}
+         
               {showRequestForm && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
                   <div className="w-full max-w-md animate-fadeIn">
