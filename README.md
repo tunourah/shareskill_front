@@ -1,6 +1,6 @@
 ![alt text](<Unlock Community Connections and Services.png>)
 
-## 🚀 Local Services Marketplace - Frontend
+## 🚀 ShareSkill - Frontend
 
 ### 📝 Brief Description
 This is the frontend for the Local Services Marketplace application. It allows users (Clients) to find and connect with local individuals or small businesses (Providers) offering various services. This part of the project handles the user interface and interaction.
@@ -20,8 +20,6 @@ Key planning aspects related to the frontend include:
 ### 💻 Technologies Used
 *   **React**: A JavaScript library for building user interfaces.
 *   **Tailwind CSS**: A utility-first CSS framework for rapid UI development.
-*   ![React Logo](https://raw.githubusercontent.com/reactjs/reactjs.org/main/src/icons/logo.svg)
-*   ![Tailwind CSS Logo](https://upload.wikimedia.org/wikipedia/commons/d/d5/Tailwind_CSS_Logo.svg)
 
 ### 🛣️ Client-Side Routes (React)
 | Path                     | Page/Component         | Purpose                                  |
