@@ -119,7 +119,8 @@ export default function ServiceCard({
 
         {/* Title */}
         <div className="text-center my-10 transform transition-all group-hover:scale-105 duration-300">
-          <h2 className="text-2xl font-bold" style={styles.title}>
+          <h2 className="text-xl  leading-10
+font-bold truncate" style={styles.title}>
             {service.title}
           </h2>
           <div
@@ -172,3 +173,4 @@ export default function ServiceCard({
     </div>
   );
 }
+

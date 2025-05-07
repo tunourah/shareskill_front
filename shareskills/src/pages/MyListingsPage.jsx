@@ -87,10 +87,10 @@ export default function MyListingsPage() {
       <button
         className="flex items-center text-sm font-medium"
         style={{ color: COLORS.darkTeal }}
-        onClick={() => nav('/my-listings')}
+        
       >
         <ChevronLeft size={16} stroke={COLORS.brightBlue} />
-        <span>Back to My Listings</span>
+       <Link to="/userpage" ><span>Back </span></Link>
       </button>
     </div>
   

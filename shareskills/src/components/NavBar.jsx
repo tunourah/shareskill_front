@@ -50,9 +50,9 @@ const NavBar = ({ user, setUser }) => {
               </a>
             </li>
           <li>
-            <Link to="/become-provider" className="hover:text-black">
+            {/* <Link to="/become-provider" className="hover:text-black">
               Become a Provider
-            </Link>
+            </Link> */}
           </li>
         </ul>
 

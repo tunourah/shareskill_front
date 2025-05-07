@@ -224,7 +224,8 @@ const SideBar = ({ services = [], pendingRequests = [], activeRequests = [] }) =
                   <MessageSquare size={18} stroke={isActive('/requests/pending') ? COLORS.brightBlue : COLORS.darkTeal} />
                   <span>Pending Requests</span>
                   <span className="ml-auto bg-yellow-100 text-yellow-800 text-xs px-2 py-0.5 rounded-full">
-                    {pendingRequests.length}
+                  {pendingCount}
+
                   </span>
                 </Link>
               </li>
@@ -239,7 +240,8 @@ const SideBar = ({ services = [], pendingRequests = [], activeRequests = [] }) =
                   <Briefcase size={18} stroke={isActive('/requests/active') ? COLORS.brightBlue : COLORS.darkTeal} />
                   <span>Active Jobs</span>
                   <span className="ml-auto bg-green-100 text-green-800 text-xs px-2 py-0.5 rounded-full">
-                    {activeRequests.length}
+                  {activeCount}
+
                   </span>
                 </Link>
               </li>
