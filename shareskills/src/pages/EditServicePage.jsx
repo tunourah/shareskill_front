@@ -264,7 +264,7 @@ const COLORS = {
                                     style={styles.button.primary}
                                   >
                                     <Plus size={16} className="inline-block mr-2" />
-                                    Create Service Listing
+                                    Edit Service Listing
                                   </button>
                                 </div>
             {error && <p className="text-red-500">{error}</p>}

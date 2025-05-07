@@ -1,15 +1,17 @@
 // src/components/ServiceCard.jsx
+import{ useState } from "react";
+
 import { Calendar, User, DollarSign, MapPin } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { deleteServiceListing } from "../utilities/serviceListingService";
-
+import DeleteConfirmationModal from "./DeleteConfirmationModal";
 export default function ServiceCard({
   service,
   showActions = false,
   onDeleted = () => {}
 }) {
   const navigate = useNavigate();
-
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   // Navigate to detail if not owner
   const handleCardClick = () => {
     if (!showActions) {
@@ -24,11 +26,14 @@ export default function ServiceCard({
 
   const handleDelete = async (e) => {
     e.stopPropagation();
-    if (!window.confirm("Delete this service?")) return;
-    await deleteServiceListing(service.id);
-    onDeleted(service.id);
+    setIsDeleteModalOpen(true);
+     
   };
-
+   const confirmDelete = async () => {
+     await deleteServiceListing(service.id);
+     onDeleted(service.id);
+       setIsDeleteModalOpen(false);
+   };
   // your COLORS & styles...
   const COLORS = { darkTeal:"#002933", brightBlue:"#0AC6F2", mint:"#25DEC5", teal:"#27969A", gold:"#F7C03E", orange:"#F76C35", magenta:"#A81E70" };
   const styles = {
@@ -42,18 +47,42 @@ export default function ServiceCard({
   return (
     <div
       onClick={handleCardClick}
-      className={`relative p-8 border rounded-3xl shadow-lg transition-transform 
+      className={`relative p-8 border overflow-hidden  rounded-3xl shadow-lg transition-transform 
                   duration-300 hover:shadow-2xl hover:scale-105 group
                   ${!showActions ? "cursor-pointer" : ""}`}
       style={styles.card}
     >
-      {/* Overlays (pointer-events-none so clicks pass through) */}
-      <div className="absolute inset-0 bg-teal-50/5 rounded-3xl z-0 pointer-events-none" />
-      <div className="absolute inset-0 backdrop-blur-sm bg-white/40 rounded-3xl
-                      opacity-0 group-hover:opacity-10 transition-opacity z-0 pointer-events-none" />
-      <div className="absolute -inset-1/2 bg-white/20 rotate-45 translate-x-full
-                      group-hover:translate-x-0 transition-transform duration-1000
-                      z-0 pointer-events-none" />
+  {/* Overlays (pointer-events-none so clicks pass through) */}
+  <div
+    className="
+      absolute inset-0
+      bg-teal-50/5
+      rounded-3xl
+      z-0
+      pointer-events-none
+    "
+  />
+  <div
+    className="
+      absolute inset-0
+      backdrop-blur-sm bg-white/40
+      rounded-3xl
+      opacity-0 group-hover:opacity-10
+      transition-opacity
+      z-0 pointer-events-none
+    "
+  />
+  <div
+    className="
+      absolute inset-0
+      bg-white/20
+      rotate-45
+      translate-x-full
+      group-hover:translate-x-0
+      transition-transform duration-1000
+      z-0 pointer-events-none
+    "
+  />
 
       {/* Main content */}
       <div className="relative z-10 pointer-events-auto">
@@ -134,6 +163,12 @@ export default function ServiceCard({
           </div>
         )}
       </div>
+          <DeleteConfirmationModal
+      isOpen={isDeleteModalOpen}
+       title="Delete Service"
+      message="This action is permanent. Do you really want to delete this service?"       onCancel={() => setIsDeleteModalOpen(false)}
+       onConfirm={confirmDelete}
+     />
     </div>
   );
 }

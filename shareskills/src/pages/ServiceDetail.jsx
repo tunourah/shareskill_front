@@ -85,7 +85,7 @@ export default function ServiceDetail({user}) {
       proposed_datetime: req.proposed_datetime || null
     });
     setShowRequestForm(false);
-    // optionally toast or navigate to “My Requests”
+    // optionally toast or navigate to "My Requests"
   };
   if (loading) {
     return (
@@ -122,7 +122,7 @@ export default function ServiceDetail({user}) {
         <button
           className="flex items-center text-sm font-medium"
           style={{ color: COLORS.darkTeal }}
-          onClick={() => nav(-1)}
+          onClick={() => navigate(-1)}
         >
           <ChevronLeft size={16} stroke={COLORS.brightBlue} />
           <span>Back to Services</span>
@@ -225,11 +225,12 @@ export default function ServiceDetail({user}) {
                 </div>
               </div>
 
-              {/* Request button & form */}
+              {/* Request button & form - STYLED VERSION */}
               {service.provider?.id !== user?.id && (
-                <div className="mt-6 text-center">
+                <div className="mt-8 text-center">
                   <button
-                    className="px-6 py-2 bg-mint text-darkTeal rounded-full"
+                    className="px-8 py-3 bg-mint font-medium rounded-full hover:bg-teal-100 transition-colors duration-300 shadow-sm"
+                    style={{ color: COLORS.darkTeal }}
                     onClick={() => setShowRequestForm(true)}
                   >
                     Request This Service
@@ -237,74 +238,101 @@ export default function ServiceDetail({user}) {
                 </div>
               )}
               {showRequestForm && (
-                <form
-                  className="mt-6 space-y-4 p-4 bg-white rounded-xl shadow"
-                  onSubmit={handleRequestSubmit}
-                >
-                  <textarea
-                    name="message"
-                    placeholder="Your message…"
-                    required
-                    className="w-full p-3 border rounded"
-                    value={req.message}
-                    onChange={e => setReq({ ...req, message: e.target.value })}
-                  />
-                  <input
-                    type="datetime-local"
-                    name="proposed_datetime"
-                    className="w-full p-3 border rounded"
-                    value={req.proposed_datetime}
-                    onChange={e => setReq({ ...req, proposed_datetime: e.target.value })}
-                  />
-                  <div className="flex justify-end gap-2">
-                    <button
-                      type="button"
-                      onClick={() => setShowRequestForm(false)}
-                      className="px-4 py-2 bg-gray-200 rounded"
+                <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+                  <div className="w-full max-w-md animate-fadeIn">
+                    <form
+                      className="p-6 bg-white rounded-2xl shadow-xl border border-gray-100"
+                      onSubmit={handleRequestSubmit}
+                      style={{ borderColor: 'rgba(39, 150, 154, 0.1)' }}
                     >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      className="px-4 py-2 bg-brightBlue text-white rounded"
-                    >
-                      Send Request
-                    </button>
+                      <h3 className="text-xl font-semibold mb-4" style={{ color: COLORS.darkTeal }}>Request Service</h3>
+                      
+                      <div className="space-y-5">
+                        <div>
+                          <label htmlFor="message" className="block text-sm font-medium mb-1" style={{ color: COLORS.darkTeal }}>
+                            Your Message
+                          </label>
+                          <textarea
+                            id="message"
+                            name="message"
+                            placeholder="Describe what you're looking for..."
+                            required
+                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:border-brightBlue transition-all"
+                            style={{ minHeight: "120px", borderColor: 'rgba(39, 150, 154, 0.3)' }}
+                            value={req.message}
+                            onChange={e => setReq({ ...req, message: e.target.value })}
+                          />
+                        </div>
+                        
+                        <div>
+                          <label htmlFor="datetime" className="block text-sm font-medium mb-1" style={{ color: COLORS.darkTeal }}>
+                            Proposed Date & Time
+                          </label>
+                          <input
+                            id="datetime"
+                            type="datetime-local"
+                            name="proposed_datetime"
+                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:border-brightBlue transition-all"
+                            style={{ borderColor: 'rgba(39, 150, 154, 0.3)' }}
+                            value={req.proposed_datetime}
+                            onChange={e => setReq({ ...req, proposed_datetime: e.target.value })}
+                          />
+                        </div>
+                      </div>
+                      
+                      <div className="flex justify-end gap-3 mt-6">
+                        <button
+                          type="button"
+                          onClick={() => setShowRequestForm(false)}
+                          className="px-5 py-2 rounded-lg hover:bg-gray-200 transition-colors duration-300"
+                          style={{ backgroundColor: '#E2E8F0', color: COLORS.darkTeal }}
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          type="submit"
+                          className="px-5 py-2 text-white rounded-lg hover:bg-blue-600 transition-colors duration-300 font-medium"
+                          style={{ backgroundColor: COLORS.brightBlue }}
+                        >
+                          Send Request
+                        </button>
+                      </div>
+                    </form>
                   </div>
-                </form>
+                </div>
               )}
             </div>
           )}
 
-{activeTab === 'reviews' && (
-  <div className="space-y-4">
-    {reviews.length > 0 ? (
-      reviews.map((rev) => (
-        <div key={rev.id} className="p-4 rounded-2xl shadow-sm">
-          {/* Reviewer & rating */}
-          <div className="flex justify-between items-start mb-2">
-            <strong className="text-gray-800">{rev.reviewer}</strong>
-            <div className="flex">
-              {[...Array(5)].map((_, i) => (
-                <Star
-                  key={i}
-                  size={14}
-                  fill={i < rev.rating ? COLORS.gold : 'transparent'}
-                  stroke={COLORS.gold}
-                />
-              ))}
-            </div>
-          </div>
+          {activeTab === 'reviews' && (
+            <div className="space-y-4">
+              {reviews.length > 0 ? (
+                reviews.map((rev) => (
+                  <div key={rev.id} className="p-4 rounded-2xl shadow-sm">
+                    {/* Reviewer & rating */}
+                    <div className="flex justify-between items-start mb-2">
+                      <strong className="text-gray-800">{rev.reviewer}</strong>
+                      <div className="flex">
+                        {[...Array(5)].map((_, i) => (
+                          <Star
+                            key={i}
+                            size={14}
+                            fill={i < rev.rating ? COLORS.gold : 'transparent'}
+                            stroke={COLORS.gold}
+                          />
+                        ))}
+                      </div>
+                    </div>
 
-          {/* **This** is the review message */}
-          <p className="text-gray-700">{rev.comment}</p>
-        </div>
-      ))
-    ) : (
-      <p className="text-center text-gray-500">No reviews yet.</p>
-    )}
-  </div>
-)}
+                    {/* **This** is the review message */}
+                    <p className="text-gray-700">{rev.comment}</p>
+                  </div>
+                ))
+              ) : (
+                <p className="text-center text-gray-500">No reviews yet.</p>
+              )}
+            </div>
+          )}
 
         </div>
       </div>

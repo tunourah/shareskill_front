@@ -8,7 +8,8 @@ const NavBar = ({ user, setUser }) => {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
 
-  function handleLogout() {
+  function handleLogout(e) {
+    e.preventDefault()
     usersAPI.logout();
     setUser(null);
     navigate("/");
@@ -138,16 +139,14 @@ const NavBar = ({ user, setUser }) => {
               </>
             ) : (
               <>
-                <Link to="/profile" onClick={() => setOpen(false)}>
+                <Link to="/userpage" onClick={() => setOpen(false)}>
                   <button className="py-2 w-full rounded bg-gray-100 hover:bg-gray-200 flex items-center justify-center gap-2">
                     <User size={16} /> {user.first_name || user.username}
                   </button>
                 </Link>
                 <button
-                  onClick={() => {
-                    handleLogout();
-                    setOpen(false);
-                  }}
+                                 onClick={handleLogout}
+
                   className="py-2 w-full rounded bg-red-50 text-red-600 hover:bg-red-100 flex items-center justify-center gap-2"
                   type="button"
                 >

@@ -48,7 +48,7 @@ export default function Services() {
     getAllServiceListings({ search, category, location })
       .then((data) => {
         if (!cancelled) {
-          // if your API sometimes wraps in { results: [...] } adjust here
+         
           const list = Array.isArray(data)
             ? data
             : Array.isArray(data.results)

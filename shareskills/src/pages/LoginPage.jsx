@@ -12,18 +12,24 @@ export default function LoginPage({ user, setUser, loggingIn }) {
     setFormData(f => ({ ...f, [evt.target.name]: evt.target.value }));
   }
 
-  async function handleLogin(evt) {
+ // src/pages/LoginPage.jsx
+async function handleLogin(evt) {
     evt.preventDefault();
     try {
       const loggedInUser = await usersAPI.login(formData);
+  
+      // 🔥 debug: what did login() actually give us?
+      console.log('🔥 login returned user:', loggedInUser);
+      console.log('🔥 localStorage.token now =', localStorage.getItem('token'));
+  
       setUser(loggedInUser);
-      loggingIn = true
       navigate("/userpage");
     } catch (err) {
       console.error("Login failed", err);
       setError(err.message || "Login failed");
     }
   }
+  
 
   if (user) {
     return (
