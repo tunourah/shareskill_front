@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { createServiceListing } from '../utilities/serviceListingService';
 import { getAllCategories }      from '../utilities/categoryService';
 import { useNavigate }           from 'react-router-dom';
-import { Plus, ChevronLeft } from "lucide-react";
+import { Plus, ChevronLeft, X, Camera } from 'lucide-react';   
 import SideBar from '../components/SideBar';
 // Define color constants from original UI
 const COLORS = {
@@ -54,6 +54,8 @@ const styles = {
 export default function NewServicePage() {
     const nav = useNavigate();
     const [categories, setCategories] = useState([]);
+    const [imagePreview, setImagePreview] = useState(null);  
+
     const [form, setForm] = useState({
       title: '',
       description: '',
@@ -61,6 +63,8 @@ export default function NewServicePage() {
       location_description: '',
       category: '',
       is_active: true,
+      image: null,               
+
     });
     const [error, setError] = useState('');
   
@@ -88,17 +92,30 @@ export default function NewServicePage() {
     };
   
     const handleSubmit = async e => {
-        e.preventDefault();
-        setError('');
-        try {
-          // await the POST; it either succeeds or throws
-          await createServiceListing(form);
-          nav('/my-listings');
-        } catch (err) {
-          console.error(err);
-          setError(err.message || 'Failed to create service');
-        }
-      };
+      e.preventDefault();
+      setError('');
+      try {
+        const data = new FormData();
+        Object.entries(form).forEach(([k, v]) => {
+          if (v != null) data.append(k, v);
+        });
+        await createServiceListing(data);
+        nav('/my-listings');
+      } catch (err) {
+        console.error(err);
+        setError(err.message || 'Failed to create service');
+      }
+    };
+        // ← new handler
+  const handleImageChange = e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setForm(f => ({ ...f, image: file }));
+    const reader = new FileReader();
+    reader.onload = () => setImagePreview(reader.result);
+    reader.readAsDataURL(file);
+  };
+
       
       return (
      
@@ -242,7 +259,65 @@ export default function NewServicePage() {
                         )}
                       </select>
                     </div>
-                    
+                      {/* Image upload */}
+              <div>
+                <label className="block text-sm font-medium mb-2"
+                       style={{color: COLORS.darkTeal}}>
+                  Service Image
+                </label>
+                <div className="mb-2">
+                  {imagePreview ? (
+                    <div className="relative w-full h-48 rounded-xl overflow-hidden">
+                      <img
+                        src={imagePreview}
+                        alt="Preview"
+                        className="w-full h-full object-cover"
+                      />
+                      <button
+                        type="button"
+                        className="absolute top-2 right-2 p-1 rounded-full bg-red-500 text-white"
+                        onClick={() => {
+                          setImagePreview(null);
+                          setForm(f => ({ ...f, image: null }));
+                        }}
+                      >
+                        <X size={16}/>
+                      </button>
+                    </div>
+                  ) : (
+                    <div
+                      className="w-full h-48 border-2 border-dashed rounded-xl flex flex-col items-center justify-center"
+                      style={{borderColor: "rgba(39, 150, 154, 0.3)"}}
+                    >
+                      <Camera size={32} stroke={COLORS.teal}/>
+                      <p className="mt-2 text-sm text-gray-500">
+                        Click to upload an image
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                <input
+                  type="file"
+                  id="image-upload"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleImageChange}
+                />
+                <label
+                  htmlFor="image-upload"
+                  className="inline-block px-4 py-2 rounded-full text-sm font-medium cursor-pointer"
+                  style={styles.button.secondary}
+                >
+                  {imagePreview ? "Change Image" : "Upload Image"}
+                </label>
+              </div>
+
+              {error && (
+                <div className="p-4 rounded-lg mt-4" style={{backgroundColor: `rgba(${COLORS.orange}, 0.1)`}}>
+                  <p className="text-sm" style={{color: COLORS.orange}}>{error}</p>
+                </div>
+              )}
                     {/* Active status toggle */}
                     <div className="flex items-center gap-3 mt-4">
                       <div className="relative inline-block">
