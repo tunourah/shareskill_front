@@ -59,12 +59,18 @@ To get the frontend development environment running:
     # yarn start
     ```
     The application should now be running on `http://localhost:3000` (or another port if specified).
-
+### Backend Link 
+`https://github.com/tunourah/shareskill_back`
 ### 📜 Available Scripts
 In the project directory, you can run:
 *   `npm start` / `yarn start`: Runs the app in development mode.
 *   `npm test` / `yarn test`: Launches the test runner in interactive watch mode.
 *   `npm run build` / `yarn build`: Builds the app for production to the `build` folder.
+### IceBox Features :
+* - Premium Provider Profiles
+* - Secure Payment System
+* - Advanced Scheduling
+* - Community Groups
 
 ### 📸 Screenshots/Demo
  

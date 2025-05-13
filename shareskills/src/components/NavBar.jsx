@@ -95,7 +95,7 @@ const NavBar = ({ user, setUser }) => {
           <ul className="space-y-2">
             <li>
               <Link
-                to="/"
+                to="/services"
                 onClick={() => setOpen(false)}
                 className="block hover:text-black"
               >
@@ -111,7 +111,7 @@ const NavBar = ({ user, setUser }) => {
                 How It Works
               </a>
             </li>
-            <li>
+            {/* <li>
               <Link
                 to="/become-provider"
                 onClick={() => setOpen(false)}
@@ -119,7 +119,7 @@ const NavBar = ({ user, setUser }) => {
               >
                 Become a Provider
               </Link>
-            </li>
+            </li> */}
           </ul>
 
           {/* Mobile auth buttons */}
