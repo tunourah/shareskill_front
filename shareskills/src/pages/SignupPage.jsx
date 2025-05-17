@@ -49,7 +49,7 @@ export default function SignupPage({ setUser }) {
             setFormData(initialState)
             navigate("/login")
         } catch (err) {
-            console.log(err);
+            // console.log(err);
             setUser(null);
         }
         setLoading(false);

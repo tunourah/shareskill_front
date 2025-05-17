@@ -1,9 +1,8 @@
-// src/pages/LoginPage.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react"; // ✅ You missed useEffect
 import { Link, useNavigate } from "react-router-dom";
 import * as usersAPI from "../utilities/users-api";
 
-export default function LoginPage({ user, setUser, loggingIn }) {
+export default function LoginPage({ user, setUser }) {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ username: "", password: "" });
   const [error, setError] = useState("");
@@ -12,24 +11,29 @@ export default function LoginPage({ user, setUser, loggingIn }) {
     setFormData(f => ({ ...f, [evt.target.name]: evt.target.value }));
   }
 
- // src/pages/LoginPage.jsx
-async function handleLogin(evt) {
+  async function handleLogin(evt) {
     evt.preventDefault();
     try {
       const loggedInUser = await usersAPI.login(formData);
-  
-      // 🔥 debug: what did login() actually give us?
-      console.log('🔥 login returned user:', loggedInUser);
-      console.log('🔥 localStorage.token now =', localStorage.getItem('token'));
-  
+    //   console.log("🔥 login returned user:", loggedInUser);
       setUser(loggedInUser);
-      navigate("/userpage");
+  
+      // ✅ Navigate immediately after login
+      navigate("/userpage", { replace: true });
     } catch (err) {
       console.error("Login failed", err);
       setError(err.message || "Login failed");
     }
   }
   
+
+  // ✅ Navigate to /userpage only *after* user is set
+  useEffect(() => {
+    // console.log("📣 LoginPage: user =", user);
+    if (user) {
+      navigate("/userpage");
+    }
+  }, [user, navigate]);
 
   if (user) {
     return (
@@ -42,7 +46,6 @@ async function handleLogin(evt) {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="bg-white rounded-3xl shadow-xl w-full max-w-md p-8">
-        {/* back link */}
         <Link to="/" className="block text-2xl mb-4 text-gray-500 hover:text-gray-700">
           &larr;
         </Link>
@@ -61,7 +64,6 @@ async function handleLogin(evt) {
         )}
 
         <form onSubmit={handleLogin} className="space-y-6">
-          {/* Username */}
           <div>
             <label htmlFor="id_username" className="block text-sm font-medium text-gray-700 mb-1">
               Username <span className="text-red-500">*</span>
@@ -77,7 +79,6 @@ async function handleLogin(evt) {
             />
           </div>
 
-          {/* Password */}
           <div>
             <label htmlFor="id_password" className="block text-sm font-medium text-gray-700 mb-1">
               Password <span className="text-red-500">*</span>
@@ -93,7 +94,6 @@ async function handleLogin(evt) {
             />
           </div>
 
-          {/* Submit */}
           <button
             type="submit"
             className="w-full py-2 rounded-full border border-gray-800 text-gray-800 font-medium hover:bg-gray-100 transition"
@@ -103,18 +103,18 @@ async function handleLogin(evt) {
         </form>
 
         <p className="text-sm text-gray-500 text-center mt-6">
-          Don’t have an account?{' '}
+          Don’t have an account?{" "}
           <Link to="/signup" className="text-rose-500 font-medium hover:underline">
             Sign up
           </Link>
         </p>
 
         <p className="text-xs text-gray-400 text-center mt-4">
-          By logging in you agree to our{' '}
+          By logging in you agree to our{" "}
           <span className="underline cursor-pointer text-gray-600">
             Terms of Service
-          </span>{' '}
-          and{' '}
+          </span>{" "}
+          and{" "}
           <span className="underline cursor-pointer text-gray-600">
             Privacy Policy
           </span>.

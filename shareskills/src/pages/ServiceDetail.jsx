@@ -1,13 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
-  ChevronLeft,
-  Camera,
-  User,
-  Star,
-  Calendar,
-  DollarSign,
-  MapPin
+  ChevronLeft, Camera, User, Star, Calendar, DollarSign, MapPin
 } from 'lucide-react';
 import sendRequest from '../utilities/sendRequest';
 import { createServiceRequest } from '../utilities/serviceRequestService';
@@ -23,7 +17,6 @@ const COLORS = {
   magenta: "#A81E70"
 };
 
-// Define custom style objects
 const styles = {
   page: { backgroundColor: "rgba(0, 41, 51, 0.03)" },
   container: {
@@ -41,12 +34,11 @@ const styles = {
   }
 };
 
-export default function ServiceDetail({user}) {
+export default function ServiceDetail({ user }) {
   const { id } = useParams();
   const navigate = useNavigate();
   const [showRequestForm, setShowRequestForm] = useState(false);
   const [req, setReq] = useState({ message: '', proposed_datetime: '' });
-  
   const [service, setService] = useState(null);
   const [reviews, setReviews] = useState([]);
   const [activeTab, setActiveTab] = useState('details');
@@ -59,24 +51,19 @@ export default function ServiceDetail({user}) {
       setError(null);
       try {
         const svc = await sendRequest(`/service-listings/${id}/`, 'GET');
-        const revResp = await sendRequest(
-          `/reviews/?service_listing=${id}`,
-          'GET'
-        );
+        const revResp = await sendRequest(`/reviews/?service_listing=${id}`, 'GET');
         setService(svc);
-        const arr     = Array.isArray(revResp) ? revResp : revResp.results || [];
-        console.log('💬 REVIEWS:', arr);
+        const arr = Array.isArray(revResp) ? revResp : revResp.results || [];
         setReviews(arr);
-
-    } catch (err) {
+      } catch (err) {
         setError(err.message || 'Failed to load details');
       } finally {
         setLoading(false);
       }
     };
-
     fetchDetail();
   }, [id]);
+
   const handleRequestSubmit = async e => {
     e.preventDefault();
     await createServiceRequest({
@@ -85,8 +72,8 @@ export default function ServiceDetail({user}) {
       proposed_datetime: req.proposed_datetime || null
     });
     setShowRequestForm(false);
-    // optionally toast or navigate to "My Requests"
   };
+
   if (loading) {
     return (
       <div className="min-h-screen flex justify-center items-center" style={styles.page}>
@@ -117,7 +104,7 @@ export default function ServiceDetail({user}) {
 
   return (
     <div className="min-h-screen py-8 px-4 md:px-8" style={styles.page}>
-      {/* Back */}
+      {/* Back Button */}
       <div className="max-w-4xl mx-auto mb-6">
         <button
           className="flex items-center text-sm font-medium"
@@ -129,19 +116,11 @@ export default function ServiceDetail({user}) {
         </button>
       </div>
 
-      {/* Container */}
-      <div
-        className="max-w-4xl mx-auto rounded-3xl overflow-hidden shadow-xl backdrop-blur-sm"
-        style={styles.container}
-      >
+      <div className="max-w-4xl mx-auto rounded-3xl overflow-hidden shadow-xl backdrop-blur-sm" style={styles.container}>
         {/* Hero */}
         <div className="relative h-64 md:h-80 bg-gray-100 flex items-center justify-center">
           {service.image_url ? (
-            <img
-              src={service.image_url}
-              alt={service.title}
-              className="w-full h-full object-cover"
-            />
+            <img src={service.image_url} alt={service.title} className="w-full h-full object-cover" />
           ) : (
             <div className="flex flex-col items-center text-gray-400">
               <Camera size={48} stroke={COLORS.teal} />
@@ -150,10 +129,8 @@ export default function ServiceDetail({user}) {
           )}
         </div>
 
-        {/* Content */}
         <div className="p-6 md:p-8">
           {/* Header */}
-          
           <div className="flex flex-col md:flex-row justify-between items-start gap-4 mb-8">
             <div>
               <h1 className="text-3xl font-bold mb-2" style={{ color: COLORS.darkTeal }}>
@@ -170,11 +147,12 @@ export default function ServiceDetail({user}) {
                   <span className="ml-1 text-gray-500">({service.review_count} reviews)</span>
                 </div>
               </div>
-            
             </div>
-                   {/* Request button & form -  */}
-                   {service.provider?.id !== user?.id && (
-                <div className="mt-8 text-center">
+
+            {/* ✅ Request Button Logic */}
+            {service.provider?.id !== user?.id && (
+              <div className="mt-8 text-center">
+                {user ? (
                   <button
                     className="px-8 py-3 bg-mint font-medium border-2 border-cyan-700 rounded-full hover:bg-teal-100 transition-colors duration-300 shadow-sm"
                     style={{ color: COLORS.darkTeal }}
@@ -182,8 +160,16 @@ export default function ServiceDetail({user}) {
                   >
                     Request This Service
                   </button>
-                </div>
-              )}
+                ) : (
+                  <button
+                    className="px-8 py-3 bg-gray-100 text-gray-700 font-medium border-2 border-gray-300 rounded-full hover:bg-gray-200 transition-colors duration-300 shadow-sm"
+                    onClick={() => navigate("/login", { state: { message: "Please log in to request this service" } })}
+                  >
+                    Log in to Request
+                  </button>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Tabs */}
@@ -206,25 +192,21 @@ export default function ServiceDetail({user}) {
             </div>
           </div>
 
-          {/* Tab panels */}
+          {/* Tab Panels */}
           {activeTab === 'details' && (
             <div className="space-y-8">
-              {/* Description & Info */}
               <div>
-                <h2 className="text-lg font-medium mb-2" style={{ color: COLORS.darkTeal }}>
-                  Description
-                </h2>
+                <h2 className="text-lg font-medium mb-2" style={{ color: COLORS.darkTeal }}>Description</h2>
                 <p className="text-gray-700 leading-relaxed">{service.description}</p>
               </div>
+
               <div>
-                <h2 className="text-lg font-medium mb-2" style={{ color: COLORS.darkTeal }}>
-                  Service Information
-                </h2>
+                <h2 className="text-lg font-medium mb-2" style={{ color: COLORS.darkTeal }}>Service Information</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {[
                     { icon: DollarSign, label: 'Price', value: service.price_description },
-                    { icon: MapPin,    label: 'Location', value: service.location_description },
-                    { icon: Calendar,  label: 'Listed Since', value: new Date(service.created_at).toLocaleDateString() }
+                    { icon: MapPin, label: 'Location', value: service.location_description },
+                    { icon: Calendar, label: 'Listed Since', value: new Date(service.created_at).toLocaleDateString() }
                   ].map(({ icon: Icon, label, value }) => (
                     <div key={label} className="flex items-start space-x-3">
                       <div className="p-2 rounded-full" style={styles.iconBg.primary}>
@@ -239,7 +221,7 @@ export default function ServiceDetail({user}) {
                 </div>
               </div>
 
-         
+              {/* Request Form Modal */}
               {showRequestForm && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
                   <div className="w-full max-w-md animate-fadeIn">
@@ -249,7 +231,6 @@ export default function ServiceDetail({user}) {
                       style={{ borderColor: 'rgba(39, 150, 154, 0.1)' }}
                     >
                       <h3 className="text-xl font-semibold mb-4" style={{ color: COLORS.darkTeal }}>Request Service</h3>
-                      
                       <div className="space-y-5">
                         <div>
                           <label htmlFor="message" className="block text-sm font-medium mb-1" style={{ color: COLORS.darkTeal }}>
@@ -260,13 +241,12 @@ export default function ServiceDetail({user}) {
                             name="message"
                             placeholder="Describe what you're looking for..."
                             required
-                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:border-brightBlue transition-all"
+                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2"
                             style={{ minHeight: "120px", borderColor: 'rgba(39, 150, 154, 0.3)' }}
                             value={req.message}
                             onChange={e => setReq({ ...req, message: e.target.value })}
                           />
                         </div>
-                        
                         <div>
                           <label htmlFor="datetime" className="block text-sm font-medium mb-1" style={{ color: COLORS.darkTeal }}>
                             Proposed Date & Time
@@ -275,26 +255,26 @@ export default function ServiceDetail({user}) {
                             id="datetime"
                             type="datetime-local"
                             name="proposed_datetime"
-                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:border-brightBlue transition-all"
+                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2"
                             style={{ borderColor: 'rgba(39, 150, 154, 0.3)' }}
                             value={req.proposed_datetime}
                             onChange={e => setReq({ ...req, proposed_datetime: e.target.value })}
                           />
                         </div>
                       </div>
-                      
+
                       <div className="flex justify-end gap-3 mt-6">
                         <button
                           type="button"
                           onClick={() => setShowRequestForm(false)}
-                          className="px-5 py-2 rounded-lg hover:bg-gray-200 transition-colors duration-300"
+                          className="px-5 py-2 rounded-lg hover:bg-gray-200"
                           style={{ backgroundColor: '#E2E8F0', color: COLORS.darkTeal }}
                         >
                           Cancel
                         </button>
                         <button
                           type="submit"
-                          className="px-5 py-2 text-white rounded-lg hover:bg-blue-600 transition-colors duration-300 font-medium"
+                          className="px-5 py-2 text-white rounded-lg hover:bg-blue-600 font-medium"
                           style={{ backgroundColor: COLORS.brightBlue }}
                         >
                           Send Request
@@ -312,7 +292,6 @@ export default function ServiceDetail({user}) {
               {reviews.length > 0 ? (
                 reviews.map((rev) => (
                   <div key={rev.id} className="p-4 rounded-2xl shadow-sm">
-                    {/* Reviewer & rating */}
                     <div className="flex justify-between items-start mb-2">
                       <strong className="text-gray-800">{rev.reviewer}</strong>
                       <div className="flex">
@@ -326,8 +305,6 @@ export default function ServiceDetail({user}) {
                         ))}
                       </div>
                     </div>
-
-                    {/* **This** is the review message */}
                     <p className="text-gray-700">{rev.comment}</p>
                   </div>
                 ))
@@ -336,7 +313,6 @@ export default function ServiceDetail({user}) {
               )}
             </div>
           )}
-
         </div>
       </div>
     </div>

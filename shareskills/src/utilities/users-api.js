@@ -1,4 +1,7 @@
 import sendRequest from "./sendRequest";
+import { jwtDecode } from "jwt-decode"; 
+
+
 const url = "/users/"
 
 export async function signup(formData) {
@@ -27,17 +30,25 @@ export  function logout() {
     localStorage.removeItem('token');
 }
 
-export async function getUser() {
+export function getUser() {
+    const token = localStorage.getItem("token");
+    if (!token) return null;
+  
     try {
-        const token = localStorage.getItem('token');
-        if (token) {
-            const response = await sendRequest(`${url}token/refresh/`)
-            localStorage.setItem('token', response.access);
-            return response.user
-        }
+      const payload = jwtDecode(token);
+  
+      if (payload.exp * 1000 < Date.now()) {
+        localStorage.removeItem("token");
         return null;
+      }
+  
+      return {
+        id: payload.user_id,
+        username: payload.username,
+        email: payload.email,
+      };
     } catch (err) {
-        console.log(err);
-        return null;
+      localStorage.removeItem("token");
+      return null;
     }
-}
+  }

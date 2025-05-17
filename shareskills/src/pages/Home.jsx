@@ -10,9 +10,7 @@ import skill2 from "../assets/images/skill4.png";
 import skill3 from "../assets/images/skill5.png"; 
 import skill4 from "../assets/images/skill6.png"; 
 
-
-// skill3 is no longer used in this version
-// import skill3 from "../assets/images/skill3.png"; 
+ 
 import Footer from '../components/Footer';
 
 // Helper component for scroll-triggered animations

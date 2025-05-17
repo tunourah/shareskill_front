@@ -52,7 +52,7 @@ export default function Router({ user, setUser, loggingIn }) {
       path: "/login",
       element: <>
         <NavBar user={user} setUser={setUser} loggingIn={true} />
-        <LoginPage setUser={setUser} />
+        <LoginPage user={user} setUser={setUser} />
       </>,
     },
     {
@@ -72,12 +72,16 @@ export default function Router({ user, setUser, loggingIn }) {
       },
     // ←—— protected route
     {
-      path: "/userpage",
-      element: <>
-            <NavBar    user={user} setUser={setUser} />
-            <UserPage  user={user} setUser={setUser} />
+        path: "/userpage",
+        element: user ? (
+          <>
+            <NavBar user={user} setUser={setUser} />
+            <UserPage user={user} setUser={setUser} />
           </>
-    },
+        ) : (
+          <Navigate to="/login" replace={true} state={{ message: "Please sign in to view your page" }} />
+        )
+      },
     {
         path: "/services/:id/edit",
         element: <>
